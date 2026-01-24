@@ -1,0 +1,126 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "hisfactory"
+		},
+		"AzureDataLakeStorage1_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage1'"
+		},
+		"hisServer69_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'hisServer69'"
+		},
+		"API_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://swapi.dev/api/people/?page=1"
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://hisadls.dfs.core.windows.net/"
+		},
+		"RestAPIwa_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://digi-api.com/api/v1/digimon"
+		},
+		"hisADLS_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://hisadls.dfs.core.windows.net/"
+		},
+		"hisServer69_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "LAPTOP-NKOE7QN2"
+		},
+		"hisServer69_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "@{linkedService().database}"
+		},
+		"hisServer69_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "fabric_user"
+		},
+		"trig_event_properties_PL_landing_to_raw_parameters_source_filePath": {
+			"type": "string",
+			"defaultValue": "@triggerBody().folderPath"
+		},
+		"trig_event_properties_PL_landing_to_raw_parameters_source_fileName": {
+			"type": "string",
+			"defaultValue": "@triggerBody().fileName"
+		},
+		"trig_event_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/b7abd08a-ff86-4b0d-8d85-c4054fadc0bf/resourceGroups/Suraksha_rest/providers/Microsoft.Storage/storageAccounts/hisadls"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "hisfactory_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"AzureDataLakeStorage1_accountKey": {
+						"value": "[parameters('AzureDataLakeStorage1_accountKey')]"
+					},
+					"hisServer69_password": {
+						"value": "[parameters('hisServer69_password')]"
+					},
+					"API_properties_typeProperties_url": {
+						"value": "[parameters('API_properties_typeProperties_url')]"
+					},
+					"AzureDataLakeStorage1_properties_typeProperties_url": {
+						"value": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]"
+					},
+					"RestAPIwa_properties_typeProperties_url": {
+						"value": "[parameters('RestAPIwa_properties_typeProperties_url')]"
+					},
+					"hisADLS_properties_typeProperties_url": {
+						"value": "[parameters('hisADLS_properties_typeProperties_url')]"
+					},
+					"hisServer69_properties_typeProperties_server": {
+						"value": "[parameters('hisServer69_properties_typeProperties_server')]"
+					},
+					"hisServer69_properties_typeProperties_database": {
+						"value": "[parameters('hisServer69_properties_typeProperties_database')]"
+					},
+					"hisServer69_properties_typeProperties_userName": {
+						"value": "[parameters('hisServer69_properties_typeProperties_userName')]"
+					},
+					"trig_event_properties_PL_landing_to_raw_parameters_source_filePath": {
+						"value": "[parameters('trig_event_properties_PL_landing_to_raw_parameters_source_filePath')]"
+					},
+					"trig_event_properties_PL_landing_to_raw_parameters_source_fileName": {
+						"value": "[parameters('trig_event_properties_PL_landing_to_raw_parameters_source_fileName')]"
+					},
+					"trig_event_properties_typeProperties_scope": {
+						"value": "[parameters('trig_event_properties_typeProperties_scope')]"
+					}
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}
