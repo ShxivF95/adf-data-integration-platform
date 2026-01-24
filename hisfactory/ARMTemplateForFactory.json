@@ -45,7 +45,7 @@
 		},
 		"trig_event_properties_PL_landing_to_raw_parameters_source_filePath": {
 			"type": "string",
-			"defaultValue": "@triggerBody().folderPath"
+			"defaultValue": "@replace(triggerBody().folderPath, 'landing/', '')"
 		},
 		"trig_event_properties_PL_landing_to_raw_parameters_source_fileName": {
 			"type": "string",

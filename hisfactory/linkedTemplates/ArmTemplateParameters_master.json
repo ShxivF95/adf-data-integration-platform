@@ -33,7 +33,7 @@
 			"value": "fabric_user"
 		},
 		"trig_event_properties_PL_landing_to_raw_parameters_source_filePath": {
-			"value": "@triggerBody().folderPath"
+			"value": "@replace(triggerBody().folderPath, 'landing/', '')"
 		},
 		"trig_event_properties_PL_landing_to_raw_parameters_source_fileName": {
 			"value": "@triggerBody().fileName"
