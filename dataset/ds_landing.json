@@ -25,8 +25,7 @@
 				"folderPath": {
 					"value": "@dataset().filePath",
 					"type": "Expression"
-				},
-				"fileSystem": "landing"
+				}
 			}
 		}
 	}
