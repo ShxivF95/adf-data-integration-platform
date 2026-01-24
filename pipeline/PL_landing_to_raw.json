@@ -57,7 +57,7 @@
 						"parameters": {
 							"containerName": "raw",
 							"filePath": {
-								"value": "@concat('semi_struc','-',\nformatDateTime(utcNow(), 'yyyyMMdd'))",
+								"value": "@pipeline().parameters.source_filePath",
 								"type": "Expression"
 							},
 							"fileName": {
