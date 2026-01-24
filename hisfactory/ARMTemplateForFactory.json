@@ -42,18 +42,6 @@
 		"hisServer69_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "fabric_user"
-		},
-		"trig_event_properties_PL_landing_to_raw_parameters_source_filePath": {
-			"type": "string",
-			"defaultValue": "@triggerBody().folderPath"
-		},
-		"trig_event_properties_PL_landing_to_raw_parameters_source_fileName": {
-			"type": "string",
-			"defaultValue": "@triggerBody().fileName"
-		},
-		"trig_event_properties_typeProperties_scope": {
-			"type": "string",
-			"defaultValue": "/subscriptions/b7abd08a-ff86-4b0d-8d85-c4054fadc0bf/resourceGroups/Suraksha_rest/providers/Microsoft.Storage/storageAccounts/hisadls"
 		}
 	},
 	"variables": {
@@ -687,98 +675,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/PL_landing_to_raw')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "landing_to_raw",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "BinarySource",
-								"storeSettings": {
-									"type": "AzureBlobFSReadSettings",
-									"recursive": true
-								},
-								"formatSettings": {
-									"type": "BinaryReadSettings"
-								}
-							},
-							"sink": {
-								"type": "BinarySink",
-								"storeSettings": {
-									"type": "AzureBlobFSWriteSettings"
-								}
-							},
-							"enableStaging": false
-						},
-						"inputs": [
-							{
-								"referenceName": "ds_landing",
-								"type": "DatasetReference",
-								"parameters": {
-									"containerName": "landing",
-									"filePath": {
-										"value": "@pipeline().parameters.source_filePath",
-										"type": "Expression"
-									},
-									"fileName": {
-										"value": "@pipeline().parameters.source_fileName",
-										"type": "Expression"
-									}
-								}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "ds_raw",
-								"type": "DatasetReference",
-								"parameters": {
-									"containerName": "raw",
-									"filePath": {
-										"value": "@pipeline().parameters.source_filePath",
-										"type": "Expression"
-									},
-									"fileName": {
-										"value": "@pipeline().parameters.source_fileName",
-										"type": "Expression"
-									}
-								}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"source_filePath": {
-						"type": "string"
-					},
-					"source_fileName": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"lastPublishTime": "2026-01-24T09:28:54Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/ds_landing')]",
-				"[concat(variables('factoryId'), '/datasets/ds_raw')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/PL_sql2adls')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -1279,94 +1175,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/ds_landing')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "hisADLS",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"containerName": {
-						"type": "string"
-					},
-					"filePath": {
-						"type": "string"
-					},
-					"fileName": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"type": "Binary",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": {
-							"value": "@dataset().fileName",
-							"type": "Expression"
-						},
-						"folderPath": {
-							"value": "@dataset().filePath",
-							"type": "Expression"
-						},
-						"fileSystem": {
-							"value": "@dataset().containerName",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/hisADLS')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/ds_raw')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "hisADLS",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"containerName": {
-						"type": "string"
-					},
-					"filePath": {
-						"type": "string"
-					},
-					"fileName": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"type": "Binary",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": {
-							"value": "@dataset().fileName",
-							"type": "Expression"
-						},
-						"folderPath": {
-							"value": "@concat('semi_struc','-',\nformatDateTime(utcNow(), 'yyyyMMdd'))",
-							"type": "Expression"
-						},
-						"fileSystem": {
-							"value": "@dataset().containerName",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/hisADLS')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/parquetwa')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1547,40 +1355,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/integrationRuntimes/microsoftchut')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/trig_event')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"runtimeState": "Started",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "PL_landing_to_raw",
-							"type": "PipelineReference"
-						},
-						"parameters": {
-							"source_filePath": "[parameters('trig_event_properties_PL_landing_to_raw_parameters_source_filePath')]",
-							"source_fileName": "[parameters('trig_event_properties_PL_landing_to_raw_parameters_source_fileName')]"
-						}
-					}
-				],
-				"type": "BlobEventsTrigger",
-				"typeProperties": {
-					"blobPathBeginsWith": "/landing/blobs/semi_struc/",
-					"blobPathEndsWith": ".json",
-					"ignoreEmptyBlobs": true,
-					"scope": "[parameters('trig_event_properties_typeProperties_scope')]",
-					"events": [
-						"Microsoft.Storage.BlobCreated"
-					]
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/PL_landing_to_raw')]"
 			]
 		},
 		{
