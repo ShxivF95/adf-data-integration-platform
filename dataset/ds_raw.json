@@ -26,7 +26,7 @@
 					"type": "Expression"
 				},
 				"folderPath": {
-					"value": "@dataset().filePath",
+					"value": "@concat('semi_struc','-',\nformatDateTime(utcNow(), 'yyyyMMdd'))",
 					"type": "Expression"
 				},
 				"fileSystem": {
