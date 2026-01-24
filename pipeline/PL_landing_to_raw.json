@@ -15,52 +15,8 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"source": {
-						"type": "BinarySource",
-						"storeSettings": {
-							"type": "AzureBlobFSReadSettings",
-							"recursive": true
-						},
-						"formatSettings": {
-							"type": "BinaryReadSettings"
-						}
-					},
-					"sink": {
-						"type": "BinarySink",
-						"storeSettings": {
-							"type": "AzureBlobFSWriteSettings"
-						}
-					},
 					"enableStaging": false
-				},
-				"inputs": [
-					{
-						"referenceName": "ds_landing",
-						"type": "DatasetReference",
-						"parameters": {
-							"filePath": {
-								"value": "@pipeline().parameters.source_filePath",
-								"type": "Expression"
-							},
-							"fileName": {
-								"value": "@pipeline().parameters.source_fileName",
-								"type": "Expression"
-							}
-						}
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "ds_raw",
-						"type": "DatasetReference",
-						"parameters": {
-							"fileName": {
-								"value": "@pipeline().parameters.source_fileName",
-								"type": "Expression"
-							}
-						}
-					}
-				]
+				}
 			}
 		],
 		"parameters": {
