@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "oldFilex",
+						"referenceName": "oldMedatadata",
 						"type": "DatasetReference"
 					},
 					"fieldList": [
@@ -34,8 +34,6 @@
 			{
 				"name": "ForEach",
 				"type": "ForEach",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Get Metadata",
@@ -64,16 +62,6 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"dataset": {
-									"referenceName": "oldFilex",
-									"type": "DatasetReference",
-									"parameters": {
-										"name": {
-											"value": "@item().name",
-											"type": "Expression"
-										}
-									}
-								},
 								"fieldList": [
 									"lastModified"
 								],
@@ -118,16 +106,6 @@
 										},
 										"userProperties": [],
 										"typeProperties": {
-											"dataset": {
-												"referenceName": "oldFiles",
-												"type": "DatasetReference",
-												"parameters": {
-													"fileName": {
-														"value": "@item().fileName",
-														"type": "Expression"
-													}
-												}
-											},
 											"logStorageSettings": {
 												"linkedServiceName": {
 													"referenceName": "hisADLS",
