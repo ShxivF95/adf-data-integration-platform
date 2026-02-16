@@ -62,12 +62,19 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"fieldList": [
-									"lastModified"
-								],
+								"dataset": {
+									"referenceName": "oldMetadatafiles2",
+									"type": "DatasetReference",
+									"parameters": {
+										"name": {
+											"value": "@item().name",
+											"type": "Expression"
+										}
+									}
+								},
+								"fieldList": [],
 								"storeSettings": {
 									"type": "AzureBlobFSReadSettings",
-									"recursive": true,
 									"enablePartitionDiscovery": false
 								},
 								"formatSettings": {
