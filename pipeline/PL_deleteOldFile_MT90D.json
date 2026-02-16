@@ -115,6 +115,16 @@
 										},
 										"userProperties": [],
 										"typeProperties": {
+											"dataset": {
+												"referenceName": "oldMetadatafiles2",
+												"type": "DatasetReference",
+												"parameters": {
+													"name": {
+														"value": "@item().name",
+														"type": "Expression"
+													}
+												}
+											},
 											"logStorageSettings": {
 												"linkedServiceName": {
 													"referenceName": "hisADLS",
