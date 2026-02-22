@@ -85,9 +85,9 @@
 							"userProperties": [],
 							"typeProperties": {
 								"source": {
-									"type": "SqlServerSource",
+									"type": "AzureSqlSource",
 									"sqlReaderQuery": {
-										"value": "@concat('select * from ',\nitem().tableName,\n' where bookingdate >= ''', \nvariables('v_watermark'), ''''\n)",
+										"value": "@concat('SELECT * FROM ',\nitem().tableName,\n' WHERE BookingDate >= ''',\nvariables('v_watermark'), ''''\n)",
 										"type": "Expression"
 									},
 									"queryTimeout": "02:00:00",
@@ -114,13 +114,9 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "sql_source",
+									"referenceName": "ds_azureSql2",
 									"type": "DatasetReference",
 									"parameters": {
-										"tableName": {
-											"value": "@item().tableName",
-											"type": "Expression"
-										},
 										"watermark": {
 											"value": "@variables('v_watermark')",
 											"type": "Expression"
