@@ -1,0 +1,15 @@
+{
+	"name": "ds_sql",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "hisServer69",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"database": "SDL"
+			}
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": []
+	}
+}
