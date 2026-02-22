@@ -206,7 +206,7 @@
 								"storedProcedureParameters": {
 									"NewWatermark": {
 										"value": {
-											"value": "@activity('Notebook').output.runOutput",
+											"value": "@variables('v_watermark')",
 											"type": "Expression"
 										},
 										"type": "DateTime"
@@ -221,11 +221,8 @@
 								}
 							},
 							"linkedServiceName": {
-								"referenceName": "hisServer69",
-								"type": "LinkedServiceReference",
-								"parameters": {
-									"database": "SDL"
-								}
+								"referenceName": "AzureSqlDatabase1",
+								"type": "LinkedServiceReference"
 							}
 						}
 					]
