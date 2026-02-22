@@ -140,6 +140,97 @@
 									}
 								}
 							]
+						},
+						{
+							"name": "Notebook",
+							"type": "DatabricksNotebook",
+							"dependsOn": [
+								{
+									"activity": "Copy data",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"notebookPath": "/Users/shivv@suraksha555.onmicrosoft.com/NB_mergeSliver",
+								"baseParameters": {
+									"tableName": {
+										"value": "@item().tableName",
+										"type": "Expression"
+									},
+									"ingestionYear": {
+										"value": "@formatDateTime(utcNow(), 'yyyy')",
+										"type": "Expression"
+									},
+									"ingestionMonth": {
+										"value": "@formatDateTime(utcNow(), 'MM')",
+										"type": "Expression"
+									},
+									"ingestionDay": {
+										"value": "@formatDateTime(utcNow(), 'dd')",
+										"type": "Expression"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "AzureDatabricks1",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "Stored procedure",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "Notebook",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": "[dbo].[usp_UpdateWatermark]",
+								"storedProcedureParameters": {
+									"NewWatermark": {
+										"value": {
+											"value": "@activity('Notebook').output.runOutput",
+											"type": "Expression"
+										},
+										"type": "DateTime"
+									},
+									"TableName": {
+										"value": {
+											"value": "@item().tableName",
+											"type": "Expression"
+										},
+										"type": "String"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "hisServer69",
+								"type": "LinkedServiceReference",
+								"parameters": {
+									"database": "SDL"
+								}
+							}
 						}
 					]
 				}
