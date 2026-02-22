@@ -120,6 +120,10 @@
 										"watermark": {
 											"value": "@variables('v_watermark')",
 											"type": "Expression"
+										},
+										"tablename": {
+											"value": "@item().tableName",
+											"type": "Expression"
 										}
 									}
 								}
