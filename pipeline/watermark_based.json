@@ -16,13 +16,13 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "SqlServerSource",
-						"sqlReaderQuery": "SELECT *\nFROM table_config\nwhere isactive = 1",
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "select *\nfrom Table_Config\nwhere IsActive = 1",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
 					"dataset": {
-						"referenceName": "ds_sql",
+						"referenceName": "ds_azureSql",
 						"type": "DatasetReference"
 					},
 					"firstRowOnly": false
