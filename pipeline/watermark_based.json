@@ -172,25 +172,7 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"notebookPath": "/Users/shivv@suraksha555.onmicrosoft.com/NB_mergeSliver",
-								"baseParameters": {
-									"tableName": {
-										"value": "@item().tableName",
-										"type": "Expression"
-									},
-									"ingestionYear": {
-										"value": "@formatDateTime(utcNow(), 'yyyy')",
-										"type": "Expression"
-									},
-									"ingestionMonth": {
-										"value": "@formatDateTime(utcNow(), 'MM')",
-										"type": "Expression"
-									},
-									"ingestionDay": {
-										"value": "@formatDateTime(utcNow(), 'dd')",
-										"type": "Expression"
-									}
-								}
+								"notebookPath": "/Users/shivv@suraksha555.onmicrosoft.com/NB_mergeSliver"
 							},
 							"linkedServiceName": {
 								"referenceName": "AzureDatabricks1",
