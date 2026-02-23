@@ -265,7 +265,11 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"tableName": {
-											"value": "@concat(\n    item().tablename,\n    '/ingestion_year=', formatDateTime(variables('v_rundate'),'yyyy'),\n    '/ingestion_month=', formatDateTime(variables('v_rundate'),'MM'),\n    '/ingestion_day=', formatDateTime(variables('v_rundate'),'dd')\n)",
+											"value": "@item().tableName",
+											"type": "Expression"
+										},
+										"runDate": {
+											"value": "@variables('v_rundate')",
 											"type": "Expression"
 										}
 									}
