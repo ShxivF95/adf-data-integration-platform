@@ -141,7 +141,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"fileName": {
-											"value": "\n",
+											"value": "@concat(\n    item().tablename,\n    '/ingestion_year=', formatDateTime(variables('v_rundate'),'yyyy'),\n    '/ingestion_month=', formatDateTime(variables('v_rundate'),'MM'),\n    '/ingestion_day=', formatDateTime(variables('v_rundate'),'dd')\n)\n",
 											"type": "Expression"
 										}
 									}
@@ -266,7 +266,7 @@
 										}
 									}
 								},
-								"enableLogging": true,
+								"enableLogging": false,
 								"storeSettings": {
 									"type": "AzureBlobFSReadSettings",
 									"recursive": true,
