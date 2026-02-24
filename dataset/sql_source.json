@@ -1,0 +1,30 @@
+{
+	"name": "sql_source",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "hisServer69",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"database": "SDL"
+			}
+		},
+		"parameters": {
+			"tableName": {
+				"type": "string"
+			},
+			"watermark": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": {
+				"value": "@dataset().tableName",
+				"type": "Expression"
+			}
+		}
+	}
+}

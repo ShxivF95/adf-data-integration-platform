@@ -1,0 +1,21 @@
+{
+	"name": "AzureDatabricks1",
+	"properties": {
+		"annotations": [],
+		"type": "AzureDatabricks",
+		"typeProperties": {
+			"domain": "https://adb-7405605784158263.3.azuredatabricks.net",
+			"authentication": "MSI",
+			"workspaceResourceId": "/subscriptions/b7abd08a-ff86-4b0d-8d85-c4054fadc0bf/resourceGroups/Suraksha_rest/providers/Microsoft.Databricks/workspaces/databricks-customer-vnet",
+			"newClusterNodeType": "Standard_DS3_v2",
+			"newClusterNumOfWorker": "1",
+			"newClusterSparkEnvVars": {
+				"PYSPARK_PYTHON": "/databricks/python3/bin/python3"
+			},
+			"newClusterVersion": "15.4.x-scala2.12",
+			"clusterOption": "Fixed",
+			"newClusterInitScripts": []
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/linkedservices"
+}
