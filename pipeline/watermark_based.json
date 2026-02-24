@@ -3,11 +3,11 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Lookup",
+				"name": "Config_Lookup",
 				"type": "Lookup",
 				"dependsOn": [
 					{
-						"activity": "Set variable",
+						"activity": "V_RunDate",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -40,7 +40,7 @@
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "Lookup",
+						"activity": "Config_Lookup",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -49,13 +49,13 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('Lookup').output.value",
+						"value": "@activity('Config_Lookup').output.value",
 						"type": "Expression"
 					},
 					"batchCount": 5,
 					"activities": [
 						{
-							"name": "watermark",
+							"name": "V_watermark",
 							"type": "SetVariable",
 							"dependsOn": [],
 							"policy": {
@@ -227,7 +227,7 @@
 							"type": "Delete",
 							"dependsOn": [
 								{
-									"activity": "watermark",
+									"activity": "V_watermark",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -268,7 +268,7 @@
 				}
 			},
 			{
-				"name": "Set variable",
+				"name": "V_RunDate",
 				"type": "SetVariable",
 				"dependsOn": [],
 				"policy": {
