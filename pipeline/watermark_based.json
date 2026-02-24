@@ -76,9 +76,9 @@
 							"type": "Copy",
 							"dependsOn": [
 								{
-									"activity": "Delete",
+									"activity": "V_watermark",
 									"dependencyConditions": [
-										"Completed"
+										"Succeeded"
 									]
 								}
 							],
@@ -220,48 +220,6 @@
 							"linkedServiceName": {
 								"referenceName": "AzureSqlDatabase1",
 								"type": "LinkedServiceReference"
-							}
-						},
-						{
-							"name": "Delete",
-							"type": "Delete",
-							"dependsOn": [
-								{
-									"activity": "V_watermark",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"dataset": {
-									"referenceName": "Parquet_form",
-									"type": "DatasetReference",
-									"parameters": {
-										"tableName": {
-											"value": "@item().tableName",
-											"type": "Expression"
-										},
-										"runDate": {
-											"value": "@variables('v_rundate')",
-											"type": "Expression"
-										}
-									}
-								},
-								"enableLogging": false,
-								"storeSettings": {
-									"type": "AzureBlobFSReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								}
 							}
 						}
 					]
