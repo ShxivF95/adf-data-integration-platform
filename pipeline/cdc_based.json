@@ -17,7 +17,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderQuery": "SELECT sys.fn_cdc_get_max_lsn() AS MaxLSN;",
+						"sqlReaderQuery": "SELECT CONVERT(VARCHAR(50), sys.fn_cdc_get_max_lsn(), 1) AS MaxLSN;",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
