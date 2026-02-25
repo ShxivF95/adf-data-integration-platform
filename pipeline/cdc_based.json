@@ -26,6 +26,30 @@
 						"type": "DatasetReference"
 					}
 				}
+			},
+			{
+				"name": "v_GlobalMaxLSN",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "MaxLSN",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "v_GlobalMaxLSN",
+					"value": {
+						"value": "@activity('MaxLSN').output.firstRow.MaxLSN",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"variables": {
