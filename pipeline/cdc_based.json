@@ -73,7 +73,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderQuery": "SELECT *\nFROM CDC_Control\nWHERE ISACTIVE= 1",
+						"sqlReaderQuery": "SELECT \n    TableName,\n    CONVERT(VARCHAR(50), LastProcessedLSN, 1) AS LastProcessedLSN,\n    IsActive\nFROM dbo.CDC_Control\nWHERE IsActive = 1;",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
@@ -149,7 +149,7 @@
 							"typeProperties": {
 								"variableName": "v_FromLSN",
 								"value": {
-									"value": "@activity('Get_LastLSN').output.firstRow.Get_LastLSN",
+									"value": "@activity('Get_LastLSN').output.firstRow.LastProcessedLSN",
 									"type": "Expression"
 								}
 							}
