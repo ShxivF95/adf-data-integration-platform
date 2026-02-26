@@ -187,29 +187,9 @@
 										"typeProperties": {
 											"source": {
 												"type": "AzureSqlSource",
-												"sqlReaderStoredProcedureName": "[dbo].[usp_GetCDCChanges]",
-												"storedProcedureParameters": {
-													"FromLSN": {
-														"type": "String",
-														"value": {
-															"value": "@variables('v_FromLSN')",
-															"type": "Expression"
-														}
-													},
-													"TableName": {
-														"type": "String",
-														"value": {
-															"value": "@item().TableName",
-															"type": "Expression"
-														}
-													},
-													"ToLSN": {
-														"type": "String",
-														"value": {
-															"value": "@variables('v_GlobalMaxLSN')",
-															"type": "Expression"
-														}
-													}
+												"sqlReaderQuery": {
+													"value": "@concat(\n'SELECT * FROM cdc.fn_cdc_get_all_changes_',\nitem().TableName,\n'(\nCONVERT(binary(10), ''',\nvariables('v_FromLSN'),\n''', 1),\nCONVERT(binary(10), ''',\nvariables('v_GlobalMaxLSN'),\n''', 1),\n''all'')'\n)",
+													"type": "Expression"
 												},
 												"queryTimeout": "02:00:00",
 												"partitionOption": "None"
