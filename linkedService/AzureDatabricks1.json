@@ -9,10 +9,6 @@
 			"workspaceResourceId": "/subscriptions/b7abd08a-ff86-4b0d-8d85-c4054fadc0bf/resourceGroups/Suraksha_rest/providers/Microsoft.Databricks/workspaces/databricks-customer-vnet",
 			"newClusterNodeType": "Standard_D4s_v3",
 			"newClusterNumOfWorker": "1",
-			"newClusterSparkConf": {
-				"fs.azure.account.auth.type.hisadls.dfs.core.windows.net": "OAuth",
-				"fs.azure.account.oauth.provider.type.hisadls.dfs.core.windows.net": "org.apache.hadoop.fs.azurebfs.oauth2.MsiTokenProvider"
-			},
 			"newClusterSparkEnvVars": {
 				"PYSPARK_PYTHON": "/databricks/python3/bin/python3"
 			},
