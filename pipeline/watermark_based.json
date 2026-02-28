@@ -172,7 +172,7 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"notebookPath": "/Users/shivv@suraksha555.onmicrosoft.com/NB_mergeSliver"
+								"notebookPath": "/Shared/Watermark_Merged"
 							},
 							"linkedServiceName": {
 								"referenceName": "AzureDatabricks1",
