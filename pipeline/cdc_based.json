@@ -188,7 +188,7 @@
 											"source": {
 												"type": "AzureSqlSource",
 												"sqlReaderQuery": {
-													"value": "@concat(\n          'SELECT * FROM cdc.fn_cdc_get_all_changes_dbo_',\n           item().TableName,\n        '(\n            CONVERT(binary(10), ''', variables('v_FromLSN'),\n                  ''', 1),\n            CONVERT(binary(10), ''',variables('v_GlobalMaxLSN'),\n                  ''', 1),\n            ''all'')')\n",
+													"value": "@concat(\n    'SELECT * FROM cdc.fn_cdc_get_all_changes_dbo_', \n    item().TableName, \n    '(CONVERT(binary(10), ', variables('v_FromLSN'), ', 1), ', \n    'CONVERT(binary(10), ', variables('v_GlobalMaxLSN'), ', 1), ', \n    '''all'')'\n)",
 													"type": "Expression"
 												},
 												"queryTimeout": "02:00:00",
