@@ -203,7 +203,7 @@
 								"storedProcedureParameters": {
 									"NewWatermark": {
 										"value": {
-											"value": "@variables('v_watermark')",
+											"value": "@activity('Notebook').output.runOutput",
 											"type": "Expression"
 										},
 										"type": "DateTime"
