@@ -15,11 +15,10 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": {
-					"value": "@dataset().TableName",
+				"folderPath": {
+					"value": "@concat(dataset().TableName, '/cdc')",
 					"type": "Expression"
 				},
-				"folderPath": "cdcdata",
 				"fileSystem": "cdcbronze"
 			},
 			"compressionCodec": "snappy"
