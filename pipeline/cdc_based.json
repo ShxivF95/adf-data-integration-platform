@@ -235,8 +235,6 @@
 									{
 										"name": "NB_Merge",
 										"type": "DatabricksNotebook",
-										"state": "Inactive",
-										"onInactiveMarkAs": "Succeeded",
 										"dependsOn": [
 											{
 												"activity": "Copy data",
@@ -258,6 +256,49 @@
 										},
 										"linkedServiceName": {
 											"referenceName": "AzureDatabricks1",
+											"type": "LinkedServiceReference"
+										}
+									},
+									{
+										"name": "Stored procedure",
+										"type": "SqlServerStoredProcedure",
+										"dependsOn": [
+											{
+												"activity": "NB_Merge",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"storedProcedureName": "[dbo].[usp_updateCDC_Control]",
+											"storedProcedureParameters": {
+												"LastProcessedLSN": {
+													"value": {
+														"value": "@activity('NB_Merge').output.runOutput.MaxLSN",
+														"type": "Expression"
+													},
+													"type": "Byte[]"
+												},
+												"TableName": {
+													"value": {
+														"value": "@item().TableName",
+														"type": "Expression"
+													},
+													"type": "String"
+												}
+											}
+										},
+										"linkedServiceName": {
+											"referenceName": "AzureSqlDatabase1",
 											"type": "LinkedServiceReference"
 										}
 									}
