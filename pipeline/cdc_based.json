@@ -1,0 +1,322 @@
+{
+	"name": "cdc_based",
+	"properties": {
+		"activities": [
+			{
+				"name": "MaxLSN",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "SELECT CONVERT(VARCHAR(50), sys.fn_cdc_get_max_lsn(), 1) AS MaxLSN;",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "ds_azureSql",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "v_GlobalMaxLSN",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "MaxLSN",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "v_GlobalMaxLSN",
+					"value": {
+						"value": "@activity('MaxLSN').output.firstRow.MaxLSN",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Get_ActiveTables",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "v_GlobalMaxLSN",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "SELECT \n    TableName,\n    CONVERT(VARCHAR(50), LastProcessedLSN, 1) AS LastProcessedLSN,\n    IsActive\nFROM dbo.CDC_Control\nWHERE IsActive = 1;",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "ds_azureSql",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "ForEach",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Get_ActiveTables",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get_ActiveTables').output.value",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Get_LastLSN",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"sqlReaderQuery": {
+										"value": "@concat(\n'SELECT CONVERT(VARCHAR(50), LastProcessedLSN, 1) AS LastProcessedLSN \n FROM CDC_Control \n WHERE TableName = ''',\nitem().TableName,\n''''\n)",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "ds_azureSql",
+									"type": "DatasetReference"
+								}
+							}
+						},
+						{
+							"name": "v_FromLSN",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Get_LastLSN",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "v_FromLSN",
+								"value": {
+									"value": "@activity('Get_LastLSN').output.firstRow.LastProcessedLSN",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "If Condition",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "v_FromLSN",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@not(equals(variables('v_FromLSN'), \r\n               variables('v_GlobalMaxLSN') ))",
+									"type": "Expression"
+								},
+								"ifTrueActivities": [
+									{
+										"name": "Copy data",
+										"type": "Copy",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "AzureSqlSource",
+												"sqlReaderQuery": {
+													"value": "@concat(\n'SELECT * FROM cdc.fn_cdc_get_all_changes_dbo_',\nitem().TableName,\n'(CONVERT(binary(10), ''',\nvariables('v_FromLSN'),\n''', 1),\nCONVERT(binary(10), ''',\nvariables('v_GlobalMaxLSN'),\n''', 1),\n''all'')'\n)",
+													"type": "Expression"
+												},
+												"queryTimeout": "02:00:00",
+												"partitionOption": "None"
+											},
+											"sink": {
+												"type": "ParquetSink",
+												"storeSettings": {
+													"type": "AzureBlobFSWriteSettings"
+												},
+												"formatSettings": {
+													"type": "ParquetWriteSettings"
+												}
+											},
+											"enableStaging": false,
+											"translator": {
+												"type": "TabularTranslator",
+												"typeConversion": true,
+												"typeConversionSettings": {
+													"allowDataTruncation": true,
+													"treatBooleanAsNumber": false
+												}
+											}
+										},
+										"inputs": [
+											{
+												"referenceName": "ds_azureSql",
+												"type": "DatasetReference"
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "Parquet_form2",
+												"type": "DatasetReference",
+												"parameters": {
+													"TableName": {
+														"value": "@item().TableName",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									},
+									{
+										"name": "NB_Merge",
+										"type": "DatabricksNotebook",
+										"dependsOn": [
+											{
+												"activity": "Copy data",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"notebookPath": "/Users/shivv@suraksha555.onmicrosoft.com/CDC_Merged"
+										},
+										"linkedServiceName": {
+											"referenceName": "AzureDatabricks1",
+											"type": "LinkedServiceReference"
+										}
+									},
+									{
+										"name": "Stored procedure",
+										"type": "SqlServerStoredProcedure",
+										"dependsOn": [
+											{
+												"activity": "NB_Merge",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"storedProcedureName": "[dbo].[usp_updateCDC_Control]",
+											"storedProcedureParameters": {
+												"LastProcessedLSN": {
+													"value": {
+														"value": "@activity('NB_Merge').output.runOutput",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"TableName": {
+													"value": {
+														"value": "@item().TableName",
+														"type": "Expression"
+													},
+													"type": "String"
+												}
+											}
+										},
+										"linkedServiceName": {
+											"referenceName": "AzureSqlDatabase1",
+											"type": "LinkedServiceReference"
+										}
+									}
+								]
+							}
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"v_GlobalMaxLSN": {
+				"type": "String"
+			},
+			"v_FromLSN": {
+				"type": "String"
+			}
+		},
+		"annotations": []
+	}
+}
