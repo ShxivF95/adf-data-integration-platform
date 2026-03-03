@@ -8,9 +8,6 @@
 		"parameters": {
 			"TableName": {
 				"type": "string"
-			},
-			"RunId": {
-				"type": "string"
 			}
 		},
 		"annotations": [],
@@ -19,14 +16,11 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": {
-					"value": "@dataset().RunId",
-					"type": "Expression"
-				},
-				"folderPath": {
 					"value": "@dataset().TableName",
 					"type": "Expression"
 				},
-				"fileSystem": "raw"
+				"folderPath": "cdcdata",
+				"fileSystem": "cdcbronze"
 			},
 			"compressionCodec": "snappy"
 		},

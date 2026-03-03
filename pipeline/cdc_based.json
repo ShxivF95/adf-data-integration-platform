@@ -227,10 +227,6 @@
 													"TableName": {
 														"value": "@item().TableName ",
 														"type": "Expression"
-													},
-													"RunId": {
-														"value": "@pipeline().RunId",
-														"type": "Expression"
 													}
 												}
 											}
@@ -239,6 +235,8 @@
 									{
 										"name": "NB_Merge",
 										"type": "DatabricksNotebook",
+										"state": "Inactive",
+										"onInactiveMarkAs": "Succeeded",
 										"dependsOn": [
 											{
 												"activity": "Copy data",
