@@ -175,6 +175,8 @@
 									{
 										"name": "Copy data",
 										"type": "Copy",
+										"state": "Inactive",
+										"onInactiveMarkAs": "Succeeded",
 										"dependsOn": [],
 										"policy": {
 											"timeout": "0.12:00:00",
@@ -283,7 +285,7 @@
 											"storedProcedureParameters": {
 												"LastProcessedLSN": {
 													"value": {
-														"value": "@activity('NB_Merge').output.runOutput.MaxLSN",
+														"value": "@activity('NB_Merge').output.runOutput",
 														"type": "Expression"
 													},
 													"type": "Byte[]"
