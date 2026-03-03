@@ -288,7 +288,7 @@
 														"value": "@activity('NB_Merge').output.runOutput",
 														"type": "Expression"
 													},
-													"type": "Byte[]"
+													"type": "String"
 												},
 												"TableName": {
 													"value": {
