@@ -94,7 +94,7 @@
 								"source": {
 									"type": "AzureSqlSource",
 									"sqlReaderQuery": {
-										"value": "@concat('SELECT * FROM ',\nitem().tablename,\n' WHERE BookingDate >= ''',\nvariables('v_watermark'), ''''\n)",
+										"value": "@concat(\n'SELECT * FROM ',\nitem().tablename,\n' WHERE BookingDate >= ''',\nvariables('v_watermark'),\n''' AND BookingDate < ''',\nvariables('v_rundate'),\n''''\n)",
 										"type": "Expression"
 									},
 									"queryTimeout": "02:00:00",
