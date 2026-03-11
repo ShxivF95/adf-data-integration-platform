@@ -1,0 +1,174 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "adf-dev-omg"
+		},
+		"AzureDataLakeStorage1_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage1'"
+		},
+		"AzureSqlDatabase1_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'AzureSqlDatabase1'"
+		},
+		"hisServer69_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'hisServer69'"
+		},
+		"API_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://swapi.dev/api/people/?page=1"
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://hisadls.dfs.core.windows.net/"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "suraksha-sql-server.database.windows.net"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "surakshadb"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "suradmin"
+		},
+		"RestAPIwa_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://digi-api.com/api/v1/digimon"
+		},
+		"hisADLS_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://hisadls.dfs.core.windows.net/"
+		},
+		"hisServer69_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "LAPTOP-NKOE7QN2"
+		},
+		"hisServer69_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "@{linkedService().database}"
+		},
+		"hisServer69_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "fabric_user"
+		},
+		"trig_event_properties_PL_landing_to_raw_parameters_source_filePath": {
+			"type": "string",
+			"defaultValue": "@triggerBody().folderPath"
+		},
+		"trig_event_properties_PL_landing_to_raw_parameters_source_fileName": {
+			"type": "string",
+			"defaultValue": "@triggerBody().fileName"
+		},
+		"trig_event_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/b7abd08a-ff86-4b0d-8d85-c4054fadc0bf/resourceGroups/Suraksha_rest/providers/Microsoft.Storage/storageAccounts/hisadls"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "adf-dev-omg_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"AzureDataLakeStorage1_accountKey": {
+						"value": "[parameters('AzureDataLakeStorage1_accountKey')]"
+					},
+					"AzureSqlDatabase1_password": {
+						"value": "[parameters('AzureSqlDatabase1_password')]"
+					},
+					"hisServer69_password": {
+						"value": "[parameters('hisServer69_password')]"
+					},
+					"API_properties_typeProperties_url": {
+						"value": "[parameters('API_properties_typeProperties_url')]"
+					},
+					"AzureDataLakeStorage1_properties_typeProperties_url": {
+						"value": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]"
+					},
+					"AzureSqlDatabase1_properties_typeProperties_server": {
+						"value": "[parameters('AzureSqlDatabase1_properties_typeProperties_server')]"
+					},
+					"AzureSqlDatabase1_properties_typeProperties_database": {
+						"value": "[parameters('AzureSqlDatabase1_properties_typeProperties_database')]"
+					},
+					"AzureSqlDatabase1_properties_typeProperties_userName": {
+						"value": "[parameters('AzureSqlDatabase1_properties_typeProperties_userName')]"
+					},
+					"RestAPIwa_properties_typeProperties_url": {
+						"value": "[parameters('RestAPIwa_properties_typeProperties_url')]"
+					},
+					"hisADLS_properties_typeProperties_url": {
+						"value": "[parameters('hisADLS_properties_typeProperties_url')]"
+					},
+					"hisServer69_properties_typeProperties_server": {
+						"value": "[parameters('hisServer69_properties_typeProperties_server')]"
+					},
+					"hisServer69_properties_typeProperties_database": {
+						"value": "[parameters('hisServer69_properties_typeProperties_database')]"
+					},
+					"hisServer69_properties_typeProperties_userName": {
+						"value": "[parameters('hisServer69_properties_typeProperties_userName')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "adf-dev-omg_ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"trig_event_properties_PL_landing_to_raw_parameters_source_filePath": {
+						"value": "[parameters('trig_event_properties_PL_landing_to_raw_parameters_source_filePath')]"
+					},
+					"trig_event_properties_PL_landing_to_raw_parameters_source_fileName": {
+						"value": "[parameters('trig_event_properties_PL_landing_to_raw_parameters_source_fileName')]"
+					},
+					"trig_event_properties_typeProperties_scope": {
+						"value": "[parameters('trig_event_properties_typeProperties_scope')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'adf-dev-omg_ArmTemplate_0')]"
+			]
+		}
+	]
+}

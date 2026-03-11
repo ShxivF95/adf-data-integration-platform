@@ -1,0 +1,2714 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "adf-dev-omg"
+		},
+		"AzureDataLakeStorage1_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage1'"
+		},
+		"AzureSqlDatabase1_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'AzureSqlDatabase1'"
+		},
+		"hisServer69_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'hisServer69'"
+		},
+		"API_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://swapi.dev/api/people/?page=1"
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://hisadls.dfs.core.windows.net/"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "suraksha-sql-server.database.windows.net"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "surakshadb"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "suradmin"
+		},
+		"RestAPIwa_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://digi-api.com/api/v1/digimon"
+		},
+		"hisADLS_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://hisadls.dfs.core.windows.net/"
+		},
+		"hisServer69_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "LAPTOP-NKOE7QN2"
+		},
+		"hisServer69_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "@{linkedService().database}"
+		},
+		"hisServer69_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "fabric_user"
+		},
+		"trig_event_properties_PL_landing_to_raw_parameters_source_filePath": {
+			"type": "string",
+			"defaultValue": "@triggerBody().folderPath"
+		},
+		"trig_event_properties_PL_landing_to_raw_parameters_source_fileName": {
+			"type": "string",
+			"defaultValue": "@triggerBody().fileName"
+		},
+		"trig_event_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/b7abd08a-ff86-4b0d-8d85-c4054fadc0bf/resourceGroups/Suraksha_rest/providers/Microsoft.Storage/storageAccounts/hisadls"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/API_Ingestion')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "API_to_ADLS",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "GET",
+								"paginationRules": {
+									"AbsoluteUrl": "$.next"
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"path": "[['name']"
+										},
+										"sink": {
+											"name": "name"
+										}
+									},
+									{
+										"source": {
+											"path": "[['height']"
+										},
+										"sink": {
+											"name": "height"
+										}
+									},
+									{
+										"source": {
+											"path": "[['mass']"
+										},
+										"sink": {
+											"name": "mass"
+										}
+									},
+									{
+										"source": {
+											"path": "[['hair_color']"
+										},
+										"sink": {
+											"name": "hair_color"
+										}
+									},
+									{
+										"source": {
+											"path": "[['skin_color']"
+										},
+										"sink": {
+											"name": "skin_color"
+										}
+									},
+									{
+										"source": {
+											"path": "[['eye_color']"
+										},
+										"sink": {
+											"name": "eye_color"
+										}
+									},
+									{
+										"source": {
+											"path": "[['birth_year']"
+										},
+										"sink": {
+											"name": "birth_year"
+										}
+									},
+									{
+										"source": {
+											"path": "[['gender']"
+										},
+										"sink": {
+											"name": "gender"
+										}
+									},
+									{
+										"source": {
+											"path": "[['homeworld']"
+										},
+										"sink": {
+											"name": "homeworld"
+										}
+									},
+									{
+										"source": {
+											"path": "[['created']"
+										},
+										"sink": {
+											"name": "created"
+										}
+									},
+									{
+										"source": {
+											"path": "[['edited']"
+										},
+										"sink": {
+											"name": "edited"
+										}
+									},
+									{
+										"source": {
+											"path": "[['url']"
+										},
+										"sink": {
+											"name": "url"
+										}
+									}
+								],
+								"collectionReference": "$['results']"
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "RestAPI",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "adls_dataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"container": "landing",
+									"folder": "Dataset",
+									"file_name": "swapi.csv"
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-12-12T05:44:44Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/RestAPI')]",
+				"[concat(variables('factoryId'), '/datasets/adls_dataset')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Metadata_driven')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Lookup_config",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "sql_dataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"database": "CS",
+									"schema": "dbo",
+									"table": "load_config"
+								}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "ForEach",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Lookup_config",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Lookup_config').output.value",
+								"type": "Expression"
+							},
+							"isSequential": true,
+							"activities": [
+								{
+									"name": "If Condition",
+									"type": "IfCondition",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"expression": {
+											"value": "@equals(item().loadtype, 'Full')",
+											"type": "Expression"
+										},
+										"ifFalseActivities": [
+											{
+												"name": "Incremental_load",
+												"type": "Copy",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "SqlServerSource",
+														"sqlReaderQuery": {
+															"value": "@concat(\n'select * from ',\nitem().database, '.', item().tablename,\n' where ', item().watermark, ' > ''',\nitem().watermark, ''''\n)\n",
+															"type": "Expression"
+														},
+														"queryTimeout": "02:00:00",
+														"partitionOption": "None"
+													},
+													"sink": {
+														"type": "DelimitedTextSink",
+														"storeSettings": {
+															"type": "AzureBlobFSWriteSettings",
+															"copyBehavior": "FlattenHierarchy"
+														},
+														"formatSettings": {
+															"type": "DelimitedTextWriteSettings",
+															"quoteAllText": true,
+															"fileExtension": ".txt"
+														}
+													},
+													"enableStaging": false,
+													"translator": {
+														"type": "TabularTranslator",
+														"typeConversion": true,
+														"typeConversionSettings": {
+															"allowDataTruncation": true,
+															"treatBooleanAsNumber": false
+														}
+													}
+												},
+												"inputs": [
+													{
+														"referenceName": "sql_dataset",
+														"type": "DatasetReference",
+														"parameters": {
+															"database": {
+																"value": "@item().database",
+																"type": "Expression"
+															},
+															"schema": {
+																"value": "@split(item().tablename, '.')[0]",
+																"type": "Expression"
+															},
+															"table": {
+																"value": "@split(item().tablename, '.')[1]",
+																"type": "Expression"
+															}
+														}
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "adls_dataset",
+														"type": "DatasetReference",
+														"parameters": {
+															"container": "bronze",
+															"folder": {
+																"value": "@item().destination",
+																"type": "Expression"
+															},
+															"file_name": {
+																"value": "@concat(split(item().tablename,'.')[1],\n    '_',\n    formatDateTime(utcNow(),'yyyyMMddHHmmss')\n)\n",
+																"type": "Expression"
+															}
+														}
+													}
+												]
+											},
+											{
+												"name": "update_config_I",
+												"type": "SqlServerStoredProcedure",
+												"dependsOn": [
+													{
+														"activity": "Incremental_load",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"storedProcedureName": "SP_update_log",
+													"storedProcedureParameters": {
+														"database": {
+															"value": {
+																"value": "@item().database",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"tablename": {
+															"value": {
+																"value": "@item().tablename",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"rows_count": {
+															"value": {
+																"value": "@activity('Incremental_load').output.rowsRead",
+																"type": "Expression"
+															},
+															"type": "Int16"
+														},
+														"loadtype": {
+															"value": {
+																"value": "@item().loadtype",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"watermark": {
+															"value": {
+																"value": "@item().watermark",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"is_active": {
+															"value": {
+																"value": "@if(item().is_active, 1, 0)\n",
+																"type": "Expression"
+															},
+															"type": "Int16"
+														},
+														"destination": {
+															"value": {
+																"value": "@item().destination",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"modified_datetime": {
+															"value": {
+																"value": "@utcNow()",
+																"type": "Expression"
+															},
+															"type": "Datetime"
+														},
+														"rows_copied": {
+															"value": {
+																"value": "@activity('Incremental_load').output.rowsCopied",
+																"type": "Expression"
+															},
+															"type": "Int16"
+														}
+													}
+												},
+												"linkedServiceName": {
+													"referenceName": "hisServer69",
+													"type": "LinkedServiceReference",
+													"parameters": {
+														"database": "CS"
+													}
+												}
+											}
+										],
+										"ifTrueActivities": [
+											{
+												"name": "Full_Load",
+												"type": "Copy",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "SqlServerSource",
+														"sqlReaderQuery": {
+															"value": "@concat('select * from ', item().database,'.',item().tablename)\n\n\n",
+															"type": "Expression"
+														},
+														"queryTimeout": "02:00:00",
+														"partitionOption": "None"
+													},
+													"sink": {
+														"type": "DelimitedTextSink",
+														"storeSettings": {
+															"type": "AzureBlobFSWriteSettings",
+															"copyBehavior": "FlattenHierarchy"
+														},
+														"formatSettings": {
+															"type": "DelimitedTextWriteSettings",
+															"quoteAllText": true,
+															"fileExtension": ".txt"
+														}
+													},
+													"enableStaging": false,
+													"enableSkipIncompatibleRow": true,
+													"logSettings": {
+														"enableCopyActivityLog": true,
+														"copyActivityLogSettings": {
+															"logLevel": "Warning",
+															"enableReliableLogging": false
+														},
+														"logLocationSettings": {
+															"linkedServiceName": {
+																"referenceName": "hisADLS",
+																"type": "LinkedServiceReference"
+															},
+															"path": "logs"
+														}
+													},
+													"translator": {
+														"type": "TabularTranslator",
+														"typeConversion": true,
+														"typeConversionSettings": {
+															"allowDataTruncation": true,
+															"treatBooleanAsNumber": false
+														}
+													}
+												},
+												"inputs": [
+													{
+														"referenceName": "sql_dataset",
+														"type": "DatasetReference",
+														"parameters": {
+															"database": {
+																"value": "@item().database",
+																"type": "Expression"
+															},
+															"schema": {
+																"value": "@split(item().tablename, '.')[0]",
+																"type": "Expression"
+															},
+															"table": {
+																"value": "@split(item().tablename, '.')[1]",
+																"type": "Expression"
+															}
+														}
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "adls_dataset",
+														"type": "DatasetReference",
+														"parameters": {
+															"container": "bronze",
+															"folder": {
+																"value": "@item().destination",
+																"type": "Expression"
+															},
+															"file_name": {
+																"value": "@split(item().tablename, '.')[1]",
+																"type": "Expression"
+															}
+														}
+													}
+												]
+											},
+											{
+												"name": "update_config",
+												"type": "SqlServerStoredProcedure",
+												"dependsOn": [
+													{
+														"activity": "Full_Load",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"storedProcedureName": "SP_update_log",
+													"storedProcedureParameters": {
+														"database": {
+															"value": {
+																"value": "@item().database",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"tablename": {
+															"value": {
+																"value": "@item().tablename",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"rows_Count": {
+															"value": {
+																"value": "@activity('Full_Load').output.rowsRead",
+																"type": "Expression"
+															},
+															"type": "Int16"
+														},
+														"loadtype": {
+															"value": {
+																"value": "@item().loadtype",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"watermark": {
+															"value": {
+																"value": "@item().watermark",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"is_active": {
+															"value": {
+																"value": "@if(item().is_active, 1, 0)\n",
+																"type": "Expression"
+															},
+															"type": "Int16"
+														},
+														"destination": {
+															"value": {
+																"value": "@item().destination",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"rows_Copied": {
+															"value": {
+																"value": "@activity('Full_Load').output.rowsCopied",
+																"type": "Expression"
+															},
+															"type": "Int16"
+														},
+														"modified_datetime": {
+															"value": {
+																"value": "@utcNow()",
+																"type": "Expression"
+															},
+															"type": "Datetime"
+														}
+													}
+												},
+												"linkedServiceName": {
+													"referenceName": "hisServer69",
+													"type": "LinkedServiceReference",
+													"parameters": {
+														"database": "CS"
+													}
+												}
+											}
+										]
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"variables": {
+					"pipeline_end": {
+						"type": "String"
+					},
+					"rows_read": {
+						"type": "String"
+					},
+					"rows_copied": {
+						"type": "String"
+					}
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-12-25T16:54:47Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/sql_dataset')]",
+				"[concat(variables('factoryId'), '/datasets/adls_dataset')]",
+				"[concat(variables('factoryId'), '/linkedServices/hisServer69')]",
+				"[concat(variables('factoryId'), '/linkedServices/hisADLS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PL_deleteOldFile_MT90D')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Get Metadata",
+						"type": "GetMetadata",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "oldMedatadata",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"fieldList": [
+								"childItems"
+							],
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "DelimitedTextReadSettings"
+							}
+						}
+					},
+					{
+						"name": "ForEach",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Get Metadata",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Get Metadata').output.childItems",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "Get Metadata2",
+									"type": "GetMetadata",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataset": {
+											"referenceName": "oldMetadatafiles2",
+											"type": "DatasetReference",
+											"parameters": {
+												"name": {
+													"value": "@item().name",
+													"type": "Expression"
+												}
+											}
+										},
+										"fieldList": [
+											"lastModified"
+										],
+										"storeSettings": {
+											"type": "AzureBlobFSReadSettings",
+											"recursive": true,
+											"enablePartitionDiscovery": false
+										},
+										"formatSettings": {
+											"type": "DelimitedTextReadSettings"
+										}
+									}
+								},
+								{
+									"name": "If Condition",
+									"type": "IfCondition",
+									"dependsOn": [
+										{
+											"activity": "Get Metadata2",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"expression": {
+											"value": "@less(activity('Get Metadata2').output.lastModified,\n     addDays(utcNow(), -60))",
+											"type": "Expression"
+										},
+										"ifTrueActivities": [
+											{
+												"name": "Delete",
+												"type": "Delete",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"dataset": {
+														"referenceName": "oldMetadatafiles2",
+														"type": "DatasetReference",
+														"parameters": {
+															"name": {
+																"value": "@item().name",
+																"type": "Expression"
+															}
+														}
+													},
+													"logStorageSettings": {
+														"linkedServiceName": {
+															"referenceName": "hisADLS",
+															"type": "LinkedServiceReference"
+														},
+														"path": "bronze"
+													},
+													"enableLogging": true,
+													"storeSettings": {
+														"type": "AzureBlobFSReadSettings",
+														"recursive": false,
+														"enablePartitionDiscovery": false
+													}
+												}
+											}
+										]
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/oldMedatadata')]",
+				"[concat(variables('factoryId'), '/datasets/oldMetadatafiles2')]",
+				"[concat(variables('factoryId'), '/linkedServices/hisADLS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PL_landing_to_raw')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "landing_to_raw",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "BinarySource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true
+								},
+								"formatSettings": {
+									"type": "BinaryReadSettings"
+								}
+							},
+							"sink": {
+								"type": "BinarySink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_landing",
+								"type": "DatasetReference",
+								"parameters": {
+									"fileName": {
+										"value": "@pipeline().parameters.source_fileName",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_raw",
+								"type": "DatasetReference",
+								"parameters": {
+									"fileName": {
+										"value": "@pipeline().parameters.source_fileName",
+										"type": "Expression"
+									}
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"source_filePath": {
+						"type": "string"
+					},
+					"source_fileName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"lastPublishTime": "2026-01-24T16:12:07Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ds_landing')]",
+				"[concat(variables('factoryId'), '/datasets/ds_raw')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PL_sql2adls')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Lookup_meta",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "sql_dataset",
+								"type": "DatasetReference",
+								"parameters": {
+									"database": "CS",
+									"schema": "dbo",
+									"table": "metadata_table"
+								}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "ForEach",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Lookup_meta",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Lookup_meta').output.value",
+								"type": "Expression"
+							},
+							"isSequential": true,
+							"activities": [
+								{
+									"name": "If Condition",
+									"type": "IfCondition",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"expression": {
+											"value": "@equals(item().loadtype, 'Full')",
+											"type": "Expression"
+										},
+										"ifFalseActivities": [
+											{
+												"name": "Incremental_load",
+												"type": "Copy",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "SqlServerSource",
+														"sqlReaderQuery": {
+															"value": "@concat(\n'select * from ',\nitem().database,'.','dbo','.',item().tablename)\n",
+															"type": "Expression"
+														},
+														"queryTimeout": "02:00:00",
+														"partitionOption": "None"
+													},
+													"sink": {
+														"type": "DelimitedTextSink",
+														"storeSettings": {
+															"type": "AzureBlobFSWriteSettings"
+														},
+														"formatSettings": {
+															"type": "DelimitedTextWriteSettings",
+															"quoteAllText": true,
+															"fileExtension": ".txt"
+														}
+													},
+													"enableStaging": false,
+													"translator": {
+														"type": "TabularTranslator",
+														"typeConversion": true,
+														"typeConversionSettings": {
+															"allowDataTruncation": true,
+															"treatBooleanAsNumber": false
+														}
+													}
+												},
+												"inputs": [
+													{
+														"referenceName": "sql_dataset",
+														"type": "DatasetReference",
+														"parameters": {
+															"database": {
+																"value": "@item().database",
+																"type": "Expression"
+															},
+															"schema": "dbo",
+															"table": {
+																"value": "@item().tablename",
+																"type": "Expression"
+															}
+														}
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "adls_dataset",
+														"type": "DatasetReference",
+														"parameters": {
+															"container": "suraksha",
+															"folder": {
+																"value": "@item().tablename",
+																"type": "Expression"
+															},
+															"file_name": {
+																"value": "@concat(\n    item().tablename,\n    '-',\n    formatDateTime(utcNow(), 'yyyyMMdd')\n    )",
+																"type": "Expression"
+															}
+														}
+													}
+												]
+											},
+											{
+												"name": "update_metadata_table",
+												"type": "SqlServerStoredProcedure",
+												"dependsOn": [
+													{
+														"activity": "Incremental_load",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"storedProcedureName": "[[dbo].[UPDATE_Metadata_table]",
+													"storedProcedureParameters": {
+														"database": {
+															"value": {
+																"value": "@item().database",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"destination": {
+															"value": {
+																"value": "@item().destination",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"ingested_at": {
+															"value": {
+																"value": "@utcNow()",
+																"type": "Expression"
+															},
+															"type": "DateTime"
+														},
+														"is_active": {
+															"value": {
+																"value": "@if(item().is_active, 1, 0)",
+																"type": "Expression"
+															},
+															"type": "Int32"
+														},
+														"loadtype": {
+															"value": {
+																"value": "@item().loadtype",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"rowcount": {
+															"value": {
+																"value": "@activity('Incremental_load').output.rowsRead",
+																"type": "Expression"
+															},
+															"type": "Int32"
+														},
+														"rows_copied": {
+															"value": {
+																"value": "@activity('Incremental_load').output.rowsCopied",
+																"type": "Expression"
+															},
+															"type": "Int32"
+														},
+														"tablename": {
+															"value": {
+																"value": "@item().tablename",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"watermark": {
+															"value": {
+																"value": "@item().watermark",
+																"type": "Expression"
+															},
+															"type": "String"
+														}
+													}
+												},
+												"linkedServiceName": {
+													"referenceName": "hisServer69",
+													"type": "LinkedServiceReference",
+													"parameters": {
+														"database": "CS"
+													}
+												}
+											}
+										],
+										"ifTrueActivities": [
+											{
+												"name": "Full_load",
+												"type": "Copy",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "SqlServerSource",
+														"sqlReaderQuery": {
+															"value": "@concat(\n    'select * from ', \n    item().database,'.','dbo','.',item().tablename)",
+															"type": "Expression"
+														},
+														"queryTimeout": "02:00:00",
+														"partitionOption": "None"
+													},
+													"sink": {
+														"type": "DelimitedTextSink",
+														"storeSettings": {
+															"type": "AzureBlobFSWriteSettings"
+														},
+														"formatSettings": {
+															"type": "DelimitedTextWriteSettings",
+															"quoteAllText": true,
+															"fileExtension": ".txt"
+														}
+													},
+													"enableStaging": false,
+													"translator": {
+														"type": "TabularTranslator",
+														"typeConversion": true,
+														"typeConversionSettings": {
+															"allowDataTruncation": true,
+															"treatBooleanAsNumber": false
+														}
+													}
+												},
+												"inputs": [
+													{
+														"referenceName": "sql_dataset",
+														"type": "DatasetReference",
+														"parameters": {
+															"database": {
+																"value": "@item().database",
+																"type": "Expression"
+															},
+															"schema": "dbo",
+															"table": {
+																"value": "@item().tablename",
+																"type": "Expression"
+															}
+														}
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "adls_dataset",
+														"type": "DatasetReference",
+														"parameters": {
+															"container": "suraksha",
+															"folder": {
+																"value": "@item().tablename",
+																"type": "Expression"
+															},
+															"file_name": {
+																"value": "@concat(\n    item().tablename,\n    '-',\n    formatDateTime(utcNow(), 'yyyyMMdd')\n    )",
+																"type": "Expression"
+															}
+														}
+													}
+												]
+											},
+											{
+												"name": "update_records",
+												"type": "SqlServerStoredProcedure",
+												"dependsOn": [
+													{
+														"activity": "Full_load",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"storedProcedureName": "[[dbo].[UPDATE_Metadata_table]",
+													"storedProcedureParameters": {
+														"database": {
+															"value": {
+																"value": "@item().database",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"destination": {
+															"value": {
+																"value": "@item().destination",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"ingested_at": {
+															"value": {
+																"value": "@utcNow()",
+																"type": "Expression"
+															},
+															"type": "DateTime"
+														},
+														"is_active": {
+															"value": {
+																"value": "@if(item().is_active, 1, 0)\n",
+																"type": "Expression"
+															},
+															"type": "Int32"
+														},
+														"loadtype": {
+															"value": {
+																"value": "@item().loadtype",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"rowcount": {
+															"value": {
+																"value": "@activity('Full_load').output.rowsRead",
+																"type": "Expression"
+															},
+															"type": "Int32"
+														},
+														"rows_copied": {
+															"value": {
+																"value": "@activity('Full_load').output.rowsCopied",
+																"type": "Expression"
+															},
+															"type": "Int32"
+														},
+														"tablename": {
+															"value": {
+																"value": "@item().tablename",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"watermark": {
+															"value": {
+																"value": "@item().watermark",
+																"type": "Expression"
+															},
+															"type": "String"
+														}
+													}
+												},
+												"linkedServiceName": {
+													"referenceName": "hisServer69",
+													"type": "LinkedServiceReference",
+													"parameters": {
+														"database": "CS"
+													}
+												}
+											}
+										]
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-12-25T16:54:47Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/sql_dataset')]",
+				"[concat(variables('factoryId'), '/datasets/adls_dataset')]",
+				"[concat(variables('factoryId'), '/linkedServices/hisServer69')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/cdc_based')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "MaxLSN",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": "SELECT CONVERT(VARCHAR(50), sys.fn_cdc_get_max_lsn(), 1) AS MaxLSN;",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "ds_azureSql",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						}
+					},
+					{
+						"name": "v_GlobalMaxLSN",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "MaxLSN",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "v_GlobalMaxLSN",
+							"value": {
+								"value": "@activity('MaxLSN').output.firstRow.MaxLSN",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Get_ActiveTables",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "v_GlobalMaxLSN",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": "SELECT \n    TableName,\n    CONVERT(VARCHAR(50), LastProcessedLSN, 1) AS LastProcessedLSN,\n    IsActive\nFROM dbo.CDC_Control\nWHERE IsActive = 1;",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "ds_azureSql",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "ForEach",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Get_ActiveTables",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Get_ActiveTables').output.value",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "Get_LastLSN",
+									"type": "Lookup",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "AzureSqlSource",
+											"sqlReaderQuery": {
+												"value": "@concat(\n'SELECT CONVERT(VARCHAR(50), LastProcessedLSN, 1) AS LastProcessedLSN \n FROM CDC_Control \n WHERE TableName = ''',\nitem().TableName,\n''''\n)",
+												"type": "Expression"
+											},
+											"queryTimeout": "02:00:00",
+											"partitionOption": "None"
+										},
+										"dataset": {
+											"referenceName": "ds_azureSql",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									}
+								},
+								{
+									"name": "v_FromLSN",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Get_LastLSN",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "v_FromLSN",
+										"value": {
+											"value": "@activity('Get_LastLSN').output.firstRow.LastProcessedLSN",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "If Condition",
+									"type": "IfCondition",
+									"dependsOn": [
+										{
+											"activity": "v_FromLSN",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"expression": {
+											"value": "@not(equals(variables('v_FromLSN'), \r\n               variables('v_GlobalMaxLSN') ))",
+											"type": "Expression"
+										},
+										"ifTrueActivities": [
+											{
+												"name": "Copy data",
+												"type": "Copy",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "AzureSqlSource",
+														"sqlReaderQuery": {
+															"value": "@concat(\n'SELECT * FROM cdc.fn_cdc_get_all_changes_dbo_',\nitem().TableName,\n'(CONVERT(binary(10), ''',\nvariables('v_FromLSN'),\n''', 1),\nCONVERT(binary(10), ''',\nvariables('v_GlobalMaxLSN'),\n''', 1),\n''all'')'\n)",
+															"type": "Expression"
+														},
+														"queryTimeout": "02:00:00",
+														"partitionOption": "None"
+													},
+													"sink": {
+														"type": "ParquetSink",
+														"storeSettings": {
+															"type": "AzureBlobFSWriteSettings"
+														},
+														"formatSettings": {
+															"type": "ParquetWriteSettings"
+														}
+													},
+													"enableStaging": false,
+													"translator": {
+														"type": "TabularTranslator",
+														"typeConversion": true,
+														"typeConversionSettings": {
+															"allowDataTruncation": true,
+															"treatBooleanAsNumber": false
+														}
+													}
+												},
+												"inputs": [
+													{
+														"referenceName": "ds_azureSql",
+														"type": "DatasetReference",
+														"parameters": {}
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "Parquet_form2",
+														"type": "DatasetReference",
+														"parameters": {
+															"TableName": {
+																"value": "@item().TableName",
+																"type": "Expression"
+															}
+														}
+													}
+												]
+											},
+											{
+												"name": "NB_Merge",
+												"type": "DatabricksNotebook",
+												"dependsOn": [
+													{
+														"activity": "Copy data",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"notebookPath": "/Users/shivv@suraksha555.onmicrosoft.com/CDC_Merged"
+												},
+												"linkedServiceName": {
+													"referenceName": "AzureDatabricks1",
+													"type": "LinkedServiceReference"
+												}
+											},
+											{
+												"name": "Stored procedure",
+												"type": "SqlServerStoredProcedure",
+												"dependsOn": [
+													{
+														"activity": "NB_Merge",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"storedProcedureName": "[[dbo].[usp_updateCDC_Control]",
+													"storedProcedureParameters": {
+														"LastProcessedLSN": {
+															"value": {
+																"value": "@activity('NB_Merge').output.runOutput",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"TableName": {
+															"value": {
+																"value": "@item().TableName",
+																"type": "Expression"
+															},
+															"type": "String"
+														}
+													}
+												},
+												"linkedServiceName": {
+													"referenceName": "AzureSqlDatabase1",
+													"type": "LinkedServiceReference"
+												}
+											}
+										]
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"variables": {
+					"v_GlobalMaxLSN": {
+						"type": "String"
+					},
+					"v_FromLSN": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ds_azureSql')]",
+				"[concat(variables('factoryId'), '/datasets/Parquet_form2')]",
+				"[concat(variables('factoryId'), '/linkedServices/AzureDatabricks1')]",
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/watermark_based')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Config_Lookup",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "V_RunDate",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": "select *\nfrom Table_Config\nwhere IsActive = 1",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "ds_azureSql",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "ForEach",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Config_Lookup",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Config_Lookup').output.value",
+								"type": "Expression"
+							},
+							"batchCount": 5,
+							"activities": [
+								{
+									"name": "V_watermark",
+									"type": "SetVariable",
+									"dependsOn": [],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "v_watermark",
+										"value": {
+											"value": "@formatDateTime(\n    addMinutes(\n          item().LastWatermarkValue,\n       mul(item().OverlapMinutes, -1)\n),'yyyy-MM-dd HH:mm:ss')",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Copy data",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "V_watermark",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "AzureSqlSource",
+											"sqlReaderQuery": {
+												"value": "@concat('SELECT * FROM ',\nitem().tablename,\n' WHERE BookingDate >= ''',\nvariables('v_watermark'), ''''\n)",
+												"type": "Expression"
+											},
+											"queryTimeout": "02:00:00",
+											"partitionOption": "None"
+										},
+										"sink": {
+											"type": "ParquetSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "ParquetWriteSettings"
+											}
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "ds_azureSql2",
+											"type": "DatasetReference",
+											"parameters": {
+												"watermark": {
+													"value": "@variables('v_watermark')",
+													"type": "Expression"
+												},
+												"tablename": {
+													"value": "@item().tablename",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "Parquet_form",
+											"type": "DatasetReference",
+											"parameters": {
+												"tableName": {
+													"value": "@item().tableName",
+													"type": "Expression"
+												},
+												"runDate": {
+													"value": "@variables('v_rundate')",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								},
+								{
+									"name": "Notebook",
+									"type": "DatabricksNotebook",
+									"dependsOn": [
+										{
+											"activity": "Copy data",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"notebookPath": "/Shared/Watermark_Merged"
+									},
+									"linkedServiceName": {
+										"referenceName": "AzureDatabricks1",
+										"type": "LinkedServiceReference"
+									}
+								},
+								{
+									"name": "Stored procedure",
+									"type": "SqlServerStoredProcedure",
+									"dependsOn": [
+										{
+											"activity": "Notebook",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"storedProcedureName": "[[dbo].[usp_UpdateWatermark]",
+										"storedProcedureParameters": {
+											"NewWatermark": {
+												"value": {
+													"value": "@activity('Notebook').output.runOutput",
+													"type": "Expression"
+												},
+												"type": "DateTime"
+											},
+											"TableName": {
+												"value": {
+													"value": "@item().tableName",
+													"type": "Expression"
+												},
+												"type": "String"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "AzureSqlDatabase1",
+										"type": "LinkedServiceReference"
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "V_RunDate",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "v_rundate",
+							"value": {
+								"value": "@utcNow()",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"variables": {
+					"v_watermark": {
+						"type": "String"
+					},
+					"v_rundate": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ds_azureSql')]",
+				"[concat(variables('factoryId'), '/datasets/ds_azureSql2')]",
+				"[concat(variables('factoryId'), '/datasets/Parquet_form')]",
+				"[concat(variables('factoryId'), '/linkedServices/AzureDatabricks1')]",
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Parquet_form')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"tableName": {
+						"type": "string"
+					},
+					"runDate": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": {
+							"value": "@concat(\n    'bronzewa/',\n    dataset().tableName,\n    '/ingestion_year=', formatDateTime(dataset().runDate,'yyyy'),\n    '/ingestion_month=', formatDateTime(dataset().runDate,'MM'),\n    '/ingestion_day=', formatDateTime(dataset().runDate,'dd')\n)",
+							"type": "Expression"
+						},
+						"fileSystem": "raw"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Parquet_form2')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "hisADLS",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"TableName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": {
+							"value": "@concat(dataset().TableName, '/cdc')",
+							"type": "Expression"
+						},
+						"fileSystem": "cdcbronze"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "COSTCENTER",
+						"type": "UTF8"
+					},
+					{
+						"name": "TESTINGCENTER",
+						"type": "UTF8"
+					},
+					{
+						"name": "BOOKINGDATE",
+						"type": "DATE"
+					},
+					{
+						"name": "APPOINTMENTDATE",
+						"type": "DATE"
+					},
+					{
+						"name": "SALESID",
+						"type": "UTF8"
+					},
+					{
+						"name": "PATH_NONPATH",
+						"type": "UTF8"
+					},
+					{
+						"name": "DEPARTMENT",
+						"type": "UTF8"
+					},
+					{
+						"name": "MODELGROUPID",
+						"type": "UTF8"
+					},
+					{
+						"name": "ITEMID",
+						"type": "UTF8"
+					},
+					{
+						"name": "TESTSTATUS",
+						"type": "UTF8"
+					},
+					{
+						"name": "CUSTOMER_TYPE",
+						"type": "UTF8"
+					},
+					{
+						"name": "ingestion_year",
+						"type": "UTF8"
+					},
+					{
+						"name": "ingestion_month",
+						"type": "UTF8"
+					},
+					{
+						"name": "ingestion_day",
+						"type": "UTF8"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/hisADLS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/RestAPI')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "API",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "RestResource",
+				"typeProperties": {},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/API')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/adls_dataset')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "hisADLS",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"container": {
+						"type": "string"
+					},
+					"folder": {
+						"type": "string"
+					},
+					"file_name": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().file_name",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().folder",
+							"type": "Expression"
+						},
+						"fileSystem": {
+							"value": "@dataset().container",
+							"type": "Expression"
+						}
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/hisADLS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_adls')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "hisADLS",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/hisADLS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_azureSql')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_azureSql2')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"watermark": {
+						"type": "string"
+					},
+					"tablename": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": {
+						"value": "@dataset().tablename",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_landing')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "hisADLS",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"fileName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().fileName",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "semi_struc",
+							"type": "Expression"
+						},
+						"fileSystem": "landing"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/hisADLS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_raw')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "hisADLS",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"fileName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().fileName",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@concat(\n    'semi_struc', '-', formatDateTime(utcNow(), 'yyyyMMdd'))",
+							"type": "Expression"
+						},
+						"fileSystem": "raw"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/hisADLS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/oldMedatadata')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "hisADLS",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "SDFC",
+						"fileSystem": "bronze"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/hisADLS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/oldMetadatafiles2')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "hisADLS",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"name": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().name",
+							"type": "Expression"
+						},
+						"folderPath": "SDFC",
+						"fileSystem": "bronze"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/hisADLS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/parquetwa')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "hisADLS",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"p_container": {
+						"type": "string"
+					},
+					"p_folder": {
+						"type": "string"
+					},
+					"p_file": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().p_file",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().p_folder",
+							"type": "Expression"
+						},
+						"fileSystem": {
+							"value": "@dataset().p_container",
+							"type": "Expression"
+						}
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/hisADLS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/sql_dataset')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "hisServer69",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"database": {
+							"value": "@dataset().database",
+							"type": "Expression"
+						}
+					}
+				},
+				"parameters": {
+					"database": {
+						"type": "string"
+					},
+					"schema": {
+						"type": "string"
+					},
+					"table": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "SqlServerTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": {
+						"value": "@dataset().schema",
+						"type": "Expression"
+					},
+					"table": {
+						"value": "@dataset().table",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/hisServer69')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/sql_source')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "hisServer69",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"database": "SDL"
+					}
+				},
+				"parameters": {
+					"tableName": {
+						"type": "string"
+					},
+					"watermark": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "SqlServerTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": {
+						"value": "@dataset().tableName",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/hisServer69')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/API')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('API_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureDataLakeStorage1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('AzureDataLakeStorage1_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureDatabricks1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureDatabricks",
+				"typeProperties": {
+					"domain": "https://adb-7405605784158263.3.azuredatabricks.net",
+					"authentication": "MSI",
+					"workspaceResourceId": "/subscriptions/b7abd08a-ff86-4b0d-8d85-c4054fadc0bf/resourceGroups/Suraksha_rest/providers/Microsoft.Databricks/workspaces/databricks-customer-vnet",
+					"newClusterNodeType": "Standard_D4s_v3",
+					"newClusterNumOfWorker": "1",
+					"newClusterSparkEnvVars": {
+						"PYSPARK_PYTHON": "/databricks/python3/bin/python3"
+					},
+					"newClusterVersion": "15.4.x-scala2.12",
+					"clusterOption": "Fixed",
+					"newClusterInitScripts": []
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabase1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"server": "[parameters('AzureSqlDatabase1_properties_typeProperties_server')]",
+					"database": "[parameters('AzureSqlDatabase1_properties_typeProperties_database')]",
+					"encrypt": "mandatory",
+					"trustServerCertificate": false,
+					"authenticationType": "SQL",
+					"userName": "[parameters('AzureSqlDatabase1_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('AzureSqlDatabase1_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/RestAPIwa')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('RestAPIwa_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/hisADLS')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('hisADLS_properties_typeProperties_url')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/hisServer69')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"parameters": {
+					"database": {
+						"type": "String"
+					}
+				},
+				"annotations": [],
+				"type": "SqlServer",
+				"typeProperties": {
+					"server": "[parameters('hisServer69_properties_typeProperties_server')]",
+					"database": "[parameters('hisServer69_properties_typeProperties_database')]",
+					"encrypt": "mandatory",
+					"trustServerCertificate": true,
+					"authenticationType": "SQL",
+					"userName": "[parameters('hisServer69_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('hisServer69_password')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "microsoftchut",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/microsoftchut')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/trig_event')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "PL_landing_to_raw",
+							"type": "PipelineReference"
+						},
+						"parameters": {
+							"source_filePath": "[parameters('trig_event_properties_PL_landing_to_raw_parameters_source_filePath')]",
+							"source_fileName": "[parameters('trig_event_properties_PL_landing_to_raw_parameters_source_fileName')]"
+						}
+					}
+				],
+				"type": "BlobEventsTrigger",
+				"typeProperties": {
+					"blobPathBeginsWith": "/landing/blobs/semi_struc/",
+					"blobPathEndsWith": ".json",
+					"ignoreEmptyBlobs": true,
+					"scope": "[parameters('trig_event_properties_typeProperties_scope')]",
+					"events": [
+						"Microsoft.Storage.BlobCreated"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/PL_landing_to_raw')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/microsoftchut')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "SelfHosted",
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		}
+	]
+}
