@@ -21,6 +21,7 @@ jobs:
       - name: Deploy ARM Template to TEST
         run: |
           az deployment group create \
-          --resource-group rg-data-test \
-          --template-file adf-dev-omg/ARMTemplateForFactory.json \
-          --parameters @adf-dev-omg/ARMTemplateParametersForFactory.json
+            --resource-group rg-data-test \
+            --template-file ARMTemplateForFactory.json \
+            --parameters @ARMTemplateParametersForFactory.json \
+            --parameters factoryName=adf-test-omg
