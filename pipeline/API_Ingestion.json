@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "API_to_ADLS",
+				"name": "API_ingestion",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
