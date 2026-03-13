@@ -1,0 +1,26 @@
+name: Deploy ADF
+
+on:
+  push:
+    branches:
+      - adf_publish
+
+jobs:
+  deploy-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy ARM Template to TEST
+        run: |
+          az deployment group create \
+          --resource-group rg-data-test \
+          --template-file adf-dev-omg/ARMTemplateForFactory.json \
+          --parameters @adf-dev-omg/ARMTemplateParametersForFactory.json
